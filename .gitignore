@@ -1,2 +1,3 @@
-git rm --cached .env
-git commit -m "Remove .env file"
+.env
+node_modules
+package-lock.json
