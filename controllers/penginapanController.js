@@ -1,6 +1,6 @@
 const Penginapan = require("../models/Penginapan");
 
-// ✅ Buat penginapan
+//  Create penginapan
 exports.createPenginapan = async (req, res) => {
   try {
     const penginapan = await Penginapan.create({
@@ -14,7 +14,7 @@ exports.createPenginapan = async (req, res) => {
   }
 };
 
-// ✅ Ambil semua penginapan
+//  Get all
 exports.getAllPenginapan = async (req, res) => {
   try {
     const data = await Penginapan.find().populate("penyedia", "name email");
@@ -24,10 +24,10 @@ exports.getAllPenginapan = async (req, res) => {
   }
 };
 
-// ✅ Ambil penginapan by ID
+//  Get by ID
 exports.getPenginapanById = async (req, res) => {
   try {
-    const penginapan = await Penginapan.findById(req.params.id);
+    const penginapan = await Penginapan.findById(req.params.id).populate("penyedia", "name email");
     if (!penginapan) return res.status(404).json({ error: "Penginapan tidak ditemukan" });
     res.json(penginapan);
   } catch (err) {
@@ -35,7 +35,7 @@ exports.getPenginapanById = async (req, res) => {
   }
 };
 
-// ✅ Update penginapan
+//  Update
 exports.updatePenginapan = async (req, res) => {
   try {
     const penginapan = await Penginapan.findById(req.params.id);
@@ -43,6 +43,7 @@ exports.updatePenginapan = async (req, res) => {
     if (penginapan.penyedia.toString() !== req.user.id && req.user.role !== "admin")
       return res.status(403).json({ error: "Akses ditolak" });
 
+    // Update hanya kolom yg boleh diupdate
     Object.assign(penginapan, req.body);
     if (req.file) penginapan.gambar = req.file.path;
 
@@ -53,7 +54,7 @@ exports.updatePenginapan = async (req, res) => {
   }
 };
 
-// ✅ Hapus penginapan
+//  Delete
 exports.deletePenginapan = async (req, res) => {
   try {
     const penginapan = await Penginapan.findById(req.params.id);
