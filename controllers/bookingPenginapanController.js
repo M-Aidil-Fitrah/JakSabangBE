@@ -1,9 +1,9 @@
 const BookingPenginapan = require("../models/BookingPenginapan");
 const Penginapan = require("../models/Penginapan");
-
 exports.createBooking = async (req, res) => {
   try {
     const { penginapan, check_in_date, check_out_date, jumlah_kamar } = req.body;
+
     if (!jumlah_kamar || jumlah_kamar < 1) {
       return res.status(400).json({ error: "Jumlah kamar harus diisi minimal 1" });
     }
@@ -11,9 +11,31 @@ exports.createBooking = async (req, res) => {
     const penginapanData = await Penginapan.findById(penginapan);
     if (!penginapanData) return res.status(404).json({ error: "Penginapan tidak ditemukan" });
 
+    // Step 1: cari booking lain di tanggal yang overlap
+    const overlappingBookings = await BookingPenginapan.find({
+      penginapan,
+      status_pembayaran: { $in: ["pending", "paid"] }, // hanya booking aktif
+      $or: [
+        {
+          check_in_date: { $lt: new Date(check_out_date) },
+          check_out_date: { $gt: new Date(check_in_date) }
+        }
+      ]
+    });
+
+    // Step 2: hitung total kamar yang sudah terbooking di periode tersebut
+    const totalKamarTerbooking = overlappingBookings.reduce((sum, b) => sum + b.jumlah_kamar, 0);
+
+    // Step 3: cek apakah cukup kamar tersedia
+    if (totalKamarTerbooking + jumlah_kamar > penginapanData.jumlahKamarTersedia) {
+      return res.status(400).json({ error: "Kamar tidak tersedia pada tanggal tersebut" });
+    }
+
+    // Step 4: hitung total harga
     const lamaInap = Math.ceil((new Date(check_out_date) - new Date(check_in_date)) / (1000 * 60 * 60 * 24));
     const total_harga = penginapanData.hargaPerMalam * lamaInap * jumlah_kamar;
 
+    // Step 5: buat booking
     const booking = await BookingPenginapan.create({
       user: req.user.id,
       penginapan,
@@ -21,14 +43,17 @@ exports.createBooking = async (req, res) => {
       check_out_date,
       jumlah_kamar,
       total_harga,
+      // payment_id dan status_pembayaran default
     });
 
-    // TODO: Integrasi ke Midtrans: generate snapToken
+    // TODO: integrasi Midtrans, buat snapToken, dsb.
     res.status(201).json(booking);
   } catch (err) {
+    console.error(err);
     res.status(400).json({ error: err.message });
   }
 };
+
 
 exports.getMyBookings = async (req, res) => {
   try {

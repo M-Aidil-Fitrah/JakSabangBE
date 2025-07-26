@@ -6,13 +6,28 @@ const snap = new midtransClient.Snap({
   isProduction: false,
   serverKey: process.env.MIDTRANS_SERVER_KEY,
 });
-
-// Buat booking + panggil Midtrans
 exports.createBooking = async (req, res) => {
   try {
     const { tourGuide, tanggalMulai, tanggalSelesai, lokasiJemput, totalHarga } = req.body;
     const orderId = `ORDER-TG-${Date.now()}-${req.user.id}`;
 
+    // Step 1: cek apakah tour guide ini sudah dibooking di tanggal overlap
+    const existingBookings = await Booking.find({
+      tourGuide,
+      status_pembayaran: { $in: ["pending", "paid"] },
+      $or: [
+        {
+          tanggalMulai: { $lt: new Date(tanggalSelesai) },
+          tanggalSelesai: { $gt: new Date(tanggalMulai) }
+        }
+      ]
+    });
+
+    if (existingBookings.length > 0) {
+      return res.status(400).json({ error: "Tour Guide sudah dibooking di tanggal tersebut" });
+    }
+
+    // Step 2: lanjut Midtrans
     const parameter = {
       transaction_details: {
         order_id: orderId,
@@ -26,6 +41,7 @@ exports.createBooking = async (req, res) => {
 
     const midtransResponse = await snap.createTransaction(parameter);
 
+    // Step 3: simpan booking
     const booking = await Booking.create({
       user: req.user.id,
       tourGuide,
@@ -39,12 +55,13 @@ exports.createBooking = async (req, res) => {
 
     res.status(201).json({
       booking,
-      payment: midtransResponse, // ada token & redirect_url
+      payment: midtransResponse,
     });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
+
 
 // Ambil semua booking user
 exports.getUserBookings = async (req, res) => {
