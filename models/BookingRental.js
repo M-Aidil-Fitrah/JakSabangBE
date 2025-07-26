@@ -23,11 +23,13 @@ const bookingRentalSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  status: {
+  payment_id: { type: String },// id transaksi dari midtrans
+  status_pembayaran: {
     type: String,
-    enum: ["pending", "approved", "rejected"],
-    default: "pending",
-  },
-}, { timestamps: true });
+    enum: ["pending", "paid", "failed", "cancelled"],
+    default: "pending"
+  }
+},
+{ timestamps: true });
 
 module.exports = mongoose.model("BookingRental", bookingRentalSchema);

@@ -2,7 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
-
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./swagger/swagger");
 dotenv.config();
 
 const authRoutes = require("./routes/authRoutes");
@@ -14,13 +15,15 @@ const tourGuideRoutes = require("./routes/tourGuideRoutes");
 const bookingTourGuideRoutes = require("./routes/bookingTourGuideRoutes");
 const bookingPaketRoutes = require("./routes/bookingPaketRoutes");
 const paketRoutes = require("./routes/paketRoutes");
-
+const verifikasiSellerRoutes = require("./routes/verifikasiSellerRoutes");
 const app = express();
-
+const passport = require("passport");
+require("./config/passport"); 
 
 // middleware
 app.use(cors());
 app.use(express.json());
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // routes
 app.use("/api/auth", authRoutes);
@@ -32,7 +35,8 @@ app.use("/api/booking/tour-guide", bookingTourGuideRoutes);
 app.use("/api/booking/penginapan", bookingPenginapanRoutes);
 app.use("/api/booking/paket", bookingPaketRoutes);
 app.use("/api/paket", paketRoutes);
-
+app.use("/api/verifikasi-seller", verifikasiSellerRoutes);
+app.use(passport.initialize());
 // root endpoint
 app.get("/", (req, res) => {
   res.send("API is running...");

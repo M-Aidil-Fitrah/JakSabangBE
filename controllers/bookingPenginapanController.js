@@ -1,11 +1,9 @@
 const BookingPenginapan = require("../models/BookingPenginapan");
 const Penginapan = require("../models/Penginapan");
 
-//  Buat booking penginapan
 exports.createBooking = async (req, res) => {
   try {
     const { penginapan, check_in_date, check_out_date, jumlah_kamar } = req.body;
-
     if (!jumlah_kamar || jumlah_kamar < 1) {
       return res.status(400).json({ error: "Jumlah kamar harus diisi minimal 1" });
     }
@@ -25,13 +23,13 @@ exports.createBooking = async (req, res) => {
       total_harga,
     });
 
+    // TODO: Integrasi ke Midtrans: generate snapToken
     res.status(201).json(booking);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
 
-//  Ambil semua booking milik user
 exports.getMyBookings = async (req, res) => {
   try {
     const data = await BookingPenginapan.find({ user: req.user.id }).populate("penginapan");
@@ -41,7 +39,6 @@ exports.getMyBookings = async (req, res) => {
   }
 };
 
-//  Ambil booking by ID
 exports.getBookingById = async (req, res) => {
   try {
     const booking = await BookingPenginapan.findById(req.params.id).populate("penginapan");
@@ -52,11 +49,9 @@ exports.getBookingById = async (req, res) => {
   }
 };
 
-//  Update status pembayaran (misalnya admin / callback payment gateway)
 exports.updatePaymentStatus = async (req, res) => {
   try {
     const { status_pembayaran, payment_id } = req.body;
-
     const booking = await BookingPenginapan.findById(req.params.id);
     if (!booking) return res.status(404).json({ error: "Booking tidak ditemukan" });
 
@@ -70,13 +65,41 @@ exports.updatePaymentStatus = async (req, res) => {
   }
 };
 
-//  Hapus booking 
+exports.handleMidtransCallback = async (req, res) => {
+  try {
+    const { order_id, transaction_status } = req.body;
+
+    const booking = await Booking.findOne({ payment_id: order_id });
+    if (!booking) return res.status(404).json({ error: "Booking tidak ditemukan" });
+
+    if (transaction_status === "capture" || transaction_status === "settlement") {
+      booking.status_pembayaran = "paid";
+      // Kurangi jumlahKamarTersedia
+      const penginapan = await Penginapan.findById(booking.penginapan);
+      if (penginapan) {
+        if (penginapan.jumlahKamarTersedia >= booking.jumlah_kamar) {
+          penginapan.jumlahKamarTersedia -= booking.jumlah_kamar;
+          await penginapan.save();
+        } else {
+          return res.status(400).json({ error: "Kamar tidak cukup tersedia" });
+        }
+      }
+    } else if (["cancel", "deny", "expire"].includes(transaction_status)) {
+      booking.status_pembayaran = "failed";
+    }
+
+    await booking.save();
+    res.status(200).json({ message: "Callback processed" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+};
 exports.deleteBooking = async (req, res) => {
   try {
     const booking = await BookingPenginapan.findById(req.params.id);
     if (!booking) return res.status(404).json({ error: "Booking tidak ditemukan" });
 
-    // Pastikan hanya owner atau admin yang boleh hapus
     if (booking.user.toString() !== req.user.id && req.user.role !== "admin") {
       return res.status(403).json({ error: "Akses ditolak" });
     }

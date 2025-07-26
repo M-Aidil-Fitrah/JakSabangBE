@@ -45,9 +45,10 @@ const penginapanSchema = new mongoose.Schema({
   email: {
     type: String,
   },
-  jumlah_kamar: {
-    type: Number,
-  },
+  jumlahKamarTersedia: {
+  type: Number,
+  required: true,
+},
   fasilitas: {
     type: [String], 
   },

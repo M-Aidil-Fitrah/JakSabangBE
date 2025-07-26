@@ -12,6 +12,10 @@ const tourGuideSchema = new mongoose.Schema({
   instagram: {
     type: String,
   },
+  kataKata:{
+    type: String,
+    required: true,
+  },
   wilayah: {
     type: String,
   },

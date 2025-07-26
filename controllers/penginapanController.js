@@ -27,8 +27,12 @@ exports.getAllPenginapan = async (req, res) => {
 //  Get by ID
 exports.getPenginapanById = async (req, res) => {
   try {
-    const penginapan = await Penginapan.findById(req.params.id).populate("penyedia", "name email");
-    if (!penginapan) return res.status(404).json({ error: "Penginapan tidak ditemukan" });
+    const penginapan = await Penginapan.findById(req.params.id).populate(
+      "penyedia",
+      "name email"
+    );
+    if (!penginapan)
+      return res.status(404).json({ error: "Penginapan tidak ditemukan" });
     res.json(penginapan);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -39,8 +43,12 @@ exports.getPenginapanById = async (req, res) => {
 exports.updatePenginapan = async (req, res) => {
   try {
     const penginapan = await Penginapan.findById(req.params.id);
-    if (!penginapan) return res.status(404).json({ error: "Penginapan tidak ditemukan" });
-    if (penginapan.penyedia.toString() !== req.user.id && req.user.role !== "admin")
+    if (!penginapan)
+      return res.status(404).json({ error: "Penginapan tidak ditemukan" });
+    if (
+      penginapan.penyedia.toString() !== req.user.id &&
+      req.user.role !== "admin"
+    )
       return res.status(403).json({ error: "Akses ditolak" });
 
     // Update hanya kolom yg boleh diupdate
@@ -58,8 +66,12 @@ exports.updatePenginapan = async (req, res) => {
 exports.deletePenginapan = async (req, res) => {
   try {
     const penginapan = await Penginapan.findById(req.params.id);
-    if (!penginapan) return res.status(404).json({ error: "Penginapan tidak ditemukan" });
-    if (penginapan.penyedia.toString() !== req.user.id && req.user.role !== "admin")
+    if (!penginapan)
+      return res.status(404).json({ error: "Penginapan tidak ditemukan" });
+    if (
+      penginapan.penyedia.toString() !== req.user.id &&
+      req.user.role !== "admin"
+    )
       return res.status(403).json({ error: "Akses ditolak" });
 
     await penginapan.deleteOne();
