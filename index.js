@@ -35,7 +35,8 @@ app.use("/api/booking/tour-guide", bookingTourGuideRoutes);
 app.use("/api/booking/penginapan", bookingPenginapanRoutes);
 app.use("/api/booking/paket", bookingPaketRoutes);
 app.use("/api/paket", paketRoutes);
-app.use("/api/verifikasi", verifikasiSellerRoutes); // Ubah dari /api/verifikasi-seller ke /api/verifikasi
+app.use("/api/verifikasi", verifikasiSellerRoutes); 
+
 app.use(passport.initialize());
 // root endpoint
 app.get("/", (req, res) => {
