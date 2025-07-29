@@ -1,6 +1,6 @@
 const express = require("express");
 const { createTourGuide, getAllTourGuides, getTourGuideById } = require("../controllers/tourGuideController");
-const verifyToken = require("../middleware/auth");
+const { verifyToken } = require("../middleware/auth");
 const upload = require("../middleware/uploadTourGuide"); // multer config
 
 const router = express.Router();

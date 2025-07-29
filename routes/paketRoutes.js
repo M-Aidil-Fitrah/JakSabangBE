@@ -6,7 +6,7 @@ const {
   deletePaket
 } = require("../controllers/paketController");
 
-const verifyToken = require("../middleware/auth");
+const { verifyToken } = require("../middleware/auth");
 const upload = require("../middleware/uploadPaket"); // pakai upload cloudinary
 
 const router = express.Router();

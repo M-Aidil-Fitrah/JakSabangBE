@@ -7,7 +7,7 @@ const {
   deletePenginapan,
 } = require("../controllers/penginapanController");
 
-const verifyToken = require("../middleware/auth");
+const { verifyToken } = require("../middleware/auth");
 const upload = require("../middleware/uploadPenginapan");
 
 const router = express.Router();

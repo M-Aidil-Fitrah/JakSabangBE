@@ -60,3 +60,46 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+exports.getAllUsers = async (req, res) => {
+  try {
+    // Cek role
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: "Hanya admin yang boleh mengakses" });
+    }
+    const users = await User.find().select('-password'); // jangan tampilkan password
+    res.status(200).json({ users });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// ✅ Update data diri
+exports.updateProfile = async (req, res) => {
+  const { name, no_hp, alamat } = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { name, no_hp, alamat },
+      { new: true, runValidators: true }
+    ).select('-password');
+    res.status(200).json({ message: "Berhasil diupdate", user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// ✅ Cek no_hp sudah pernah dipakai atau belum
+exports.checkPhoneNumber = async (req, res) => {
+  const { no_hp } = req.body;
+  try {
+    const existing = await User.findOne({ no_hp });
+    if (existing) {
+      return res.status(200).json({ used: true });
+    } else {
+      return res.status(200).json({ used: false });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+      

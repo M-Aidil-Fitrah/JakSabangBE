@@ -6,7 +6,7 @@ const {
   updateBookingStatus,
   handleMidtransCallback,
 } = require("../controllers/bookingRentalController");
-const verifyToken = require("../middleware/auth");
+const { verifyToken } = require("../middleware/auth");
 
 const router = express.Router();
 

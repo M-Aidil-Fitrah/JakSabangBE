@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 
+// ✅ Middleware cek token biasa
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -17,4 +18,12 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-module.exports = verifyToken;
+// ✅ Middleware cek kalau user adalah admin
+const verifyAdmin = (req, res, next) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ error: "Hanya admin yang diizinkan" });
+  }
+  next();
+};
+
+module.exports = { verifyToken, verifyAdmin };
