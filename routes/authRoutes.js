@@ -156,17 +156,41 @@ module.exports = router;
  * @swagger
  * /api/auth/me:
  *   get:
- *     summary: Cek status login user
+ *     summary: Mendapatkan data profil user yang sedang login
  *     tags: [Auth]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Berhasil, return user data
+ *         description: Berhasil, return user data (tanpa password)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     no_hp:
+ *                       type: string
+ *                     alamat:
+ *                       type: string
+ *                     role:
+ *                       type: string
  *       401:
  *         description: Token tidak ditemukan
  *       403:
  *         description: Token tidak valid
+ *       404:
+ *         description: User tidak ditemukan
+ *       500:
+ *         description: Server error
  */
 
 /**
