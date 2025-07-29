@@ -47,6 +47,8 @@ const upload = require("../middleware/uploadVerifikasi"); // multer config
  *               $ref: '#/components/schemas/VerifikasiSeller'
  *       400:
  *         description: Input tidak valid
+ *       500:
+ *         description: Error server
  */
 router.post(
   "/",
@@ -73,9 +75,17 @@ router.post(
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/VerifikasiSeller'
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   enum: [pending, approved, rejected]
+ *                 catatan:
+ *                   type: string
  *       404:
  *         description: Data verifikasi tidak ditemukan
+ *       500:
+ *         description: Error server
  */
 router.get("/status", verifyToken, getStatusVerifikasi);
 

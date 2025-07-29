@@ -35,14 +35,14 @@ app.use("/api/booking/tour-guide", bookingTourGuideRoutes);
 app.use("/api/booking/penginapan", bookingPenginapanRoutes);
 app.use("/api/booking/paket", bookingPaketRoutes);
 app.use("/api/paket", paketRoutes);
-app.use("/api/verifikasi-seller", verifikasiSellerRoutes);
+app.use("/api/verifikasi", verifikasiSellerRoutes); // Ubah dari /api/verifikasi-seller ke /api/verifikasi
 app.use(passport.initialize());
 // root endpoint
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-// connect to MongoDB
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log("✅ MongoDB connected");
