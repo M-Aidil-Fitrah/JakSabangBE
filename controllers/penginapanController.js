@@ -45,14 +45,27 @@ exports.updatePenginapan = async (req, res) => {
     const penginapan = await Penginapan.findById(req.params.id);
     if (!penginapan)
       return res.status(404).json({ error: "Penginapan tidak ditemukan" });
-    if (
-      penginapan.penyedia.toString() !== req.user.id &&
-      req.user.role !== "admin"
-    )
-      return res.status(403).json({ error: "Akses ditolak" });
 
-    // Update hanya kolom yg boleh diupdate
-    Object.assign(penginapan, req.body);
+    // Jika user pemilik atau admin => boleh update semua
+    if (penginapan.penyedia.toString() === req.user.id || req.user.role === "admin") {
+      Object.assign(penginapan, req.body);
+    }
+    // Kalau user biasa => boleh update hanya kolom tertentu, misalnya add_review
+    else if (req.body.add_review) {
+      // Contoh logika: update rating dan jumlah_review
+      const newRating = req.body.add_review.rating;
+      const userId = req.user.id;
+
+      // Misalnya: tambahkan ke array review / hitung rata-rata baru
+      // (kode sesuai schema kamu, ini hanya contoh sederhana)
+      penginapan.jumlah_review += 1;
+      penginapan.rating = 
+        (penginapan.rating * (penginapan.jumlah_review - 1) + newRating) / penginapan.jumlah_review;
+    }
+    else {
+      return res.status(403).json({ error: "Akses ditolak" });
+    }
+
     if (req.file) penginapan.gambar = req.file.path;
 
     await penginapan.save();
@@ -61,6 +74,7 @@ exports.updatePenginapan = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 //  Delete
 exports.deletePenginapan = async (req, res) => {
