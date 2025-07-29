@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const {verifyToken} = require("../middleware/auth");
 const { updateRoleUserByAdmin, getAllUsersWithVerifikasi } = require("../controllers/userAdminController");
+const { verifyAdmin } = require("../middleware/auth");
+
 
 /**
  * @swagger
@@ -26,7 +28,7 @@ const { updateRoleUserByAdmin, getAllUsersWithVerifikasi } = require("../control
  *       500:
  *         description: Server error
  */
-router.get("/users", verifyToken, getAllUsersWithVerifikasi);
+router.get("/users", verifyToken, verifyAdmin, getAllUsersWithVerifikasi);
 
 /**
  * @swagger

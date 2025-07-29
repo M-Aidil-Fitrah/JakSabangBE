@@ -25,7 +25,6 @@ exports.updateRoleUserByAdmin = async (req, res) => {
   }
 };
 
-
 exports.getAllUsersWithVerifikasi = async (req, res) => {
   try {
     const users = await User.find().select("-password");
@@ -41,7 +40,7 @@ exports.getAllUsersWithVerifikasi = async (req, res) => {
       verifikasi: verifikasiByUserId[user._id.toString()] || null
     }));
 
-    res.status(200).json(combined);
+    res.status(200).json({ users: combined });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
