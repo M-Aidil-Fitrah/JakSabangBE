@@ -52,7 +52,7 @@ const upload = require("../middleware/uploadVerifikasi"); // multer config
  */
 router.post(
   "/",
-  verifyToken,
+    
   upload.fields([
     { name: "npwp", maxCount: 1 },
     { name: "ktp", maxCount: 1 },
