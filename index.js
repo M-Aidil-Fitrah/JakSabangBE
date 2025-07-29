@@ -19,6 +19,8 @@ const verifikasiSellerRoutes = require("./routes/verifikasiSellerRoutes");
 const app = express();
 const passport = require("passport");
 require("./config/passport"); 
+const utilsRoutes = require('./routes/utilsRoutes');
+
 
 // middleware
 app.use(cors());
@@ -36,6 +38,8 @@ app.use("/api/booking/penginapan", bookingPenginapanRoutes);
 app.use("/api/booking/paket", bookingPaketRoutes);
 app.use("/api/paket", paketRoutes);
 app.use("/api/verifikasi", verifikasiSellerRoutes); 
+app.use('/api', utilsRoutes);
+
 
 app.use(passport.initialize());
 // root endpoint
