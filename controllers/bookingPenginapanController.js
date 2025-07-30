@@ -51,6 +51,8 @@ exports.createBooking = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(400).json({ error: err.message });
+    console.log(req.body);
+    console.log(req.user);
   }
 };
 
