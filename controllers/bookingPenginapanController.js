@@ -58,9 +58,7 @@ exports.createBooking = async (req, res) => {
       return res.status(500).json({ error: "Server configuration error: MIDTRANS_SERVER_KEY missing" });
     }
 
-    const isProduction = process.env.MIDTRANS_IS_PRODUCTION === 'true';
-    console.log(`✅ Creating Midtrans transaction (isProduction=${isProduction})`);
-
+    const isProduction = true;
     let snap = new midtransClient.Snap({
       isProduction,
       serverKey: process.env.MIDTRANS_SERVER_KEY,
