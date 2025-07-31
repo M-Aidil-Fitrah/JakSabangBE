@@ -119,21 +119,18 @@ exports.handleMidtransCallback = async (req, res) => {
 
 exports.getBookingsForSeller = async (req, res) => {
   try {
-   
-    const bookings = await Booking.find({
-      tourGuide: req.user.id
-    })
-      .populate("user")            // tampilkan info user yang memesan
-      .populate("tourGuide");      // opsional: tampilkan info tour guide juga
+    // Cari semua booking di mana tourGuide adalah user seller ini
+    const bookings = await BookingTourGuide.find({ tourGuide: req.user.id })
+      .populate("user", "name email")
+      .populate("tourGuide", "nama wilayah");  // opsional
 
-    // Kirim data sebagai response JSON
     res.status(200).json({
       success: true,
       count: bookings.length,
       data: bookings
     });
   } catch (err) {
-    console.error("[getBookingsForSeller] Error:", err.message);
+    console.error("[getBookingsForSeller - TourGuide]", err.message);
     res.status(500).json({
       success: false,
       error: "Terjadi kesalahan pada server"

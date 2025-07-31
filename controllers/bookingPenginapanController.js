@@ -204,17 +204,25 @@ exports.deleteBooking = async (req, res) => {
 
 exports.getBookingsForSeller = async (req, res) => {
   try {
-    // cari penginapan milik seller ini
+    // Cari semua penginapan milik seller ini
     const penginapanSeller = await Penginapan.find({ penyedia: req.user.id }).select('_id');
     const penginapanIds = penginapanSeller.map(p => p._id);
 
-    // cari semua booking untuk penginapan tersebut
+    // Cari booking untuk penginapan tersebut
     const bookings = await Booking.find({ penginapan: { $in: penginapanIds } })
       .populate("user", "name email")
       .populate("penginapan", "nama lokasi");
 
-    res.json(bookings);
+    res.status(200).json({
+      success: true,
+      count: bookings.length,
+      data: bookings
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("[getBookingsForSeller - Penginapan]", err.message);
+    res.status(500).json({
+      success: false,
+      error: "Terjadi kesalahan pada server"
+    });
   }
 };

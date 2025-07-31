@@ -90,14 +90,23 @@ exports.getBookingsForSeller = async (req, res) => {
 
     // Cari booking untuk rental tersebut
     const bookings = await BookingRental.find({ rental: { $in: rentalIds } })
-      .populate("user", "name email")     // info pembeli
-      .populate("rental", "nama");        // info rental
+      .populate("user", "name email")
+      .populate("rental", "nama");
 
-    res.json(bookings);
+    res.status(200).json({
+      success: true,
+      count: bookings.length,
+      data: bookings
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("[getBookingsForSeller - Rental]", err.message);
+    res.status(500).json({
+      success: false,
+      error: "Terjadi kesalahan pada server"
+    });
   }
 };
+
 // Update status pembayaran manual (admin)
 exports.updateBookingStatus = async (req, res) => {
   try {
