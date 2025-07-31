@@ -115,3 +115,28 @@ exports.handleMidtransCallback = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+
+exports.getBookingsForSeller = async (req, res) => {
+  try {
+   
+    const bookings = await Booking.find({
+      tourGuide: req.user.id
+    })
+      .populate("user")            // tampilkan info user yang memesan
+      .populate("tourGuide");      // opsional: tampilkan info tour guide juga
+
+    // Kirim data sebagai response JSON
+    res.status(200).json({
+      success: true,
+      count: bookings.length,
+      data: bookings
+    });
+  } catch (err) {
+    console.error("[getBookingsForSeller] Error:", err.message);
+    res.status(500).json({
+      success: false,
+      error: "Terjadi kesalahan pada server"
+    });
+  }
+};

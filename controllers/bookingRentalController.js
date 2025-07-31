@@ -82,6 +82,22 @@ exports.getAllBookings = async (req, res) => {
   }
 };
 
+exports.getBookingsForSeller = async (req, res) => {
+  try {
+    // Cari semua rental milik seller ini
+    const rentals = await Rental.find({ penyedia: req.user.id }).select('_id');
+    const rentalIds = rentals.map(r => r._id);
+
+    // Cari booking untuk rental tersebut
+    const bookings = await BookingRental.find({ rental: { $in: rentalIds } })
+      .populate("user", "name email")     // info pembeli
+      .populate("rental", "nama");        // info rental
+
+    res.json(bookings);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 // Update status pembayaran manual (admin)
 exports.updateBookingStatus = async (req, res) => {
   try {

@@ -200,3 +200,21 @@ exports.deleteBooking = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+
+exports.getBookingsForSeller = async (req, res) => {
+  try {
+    // cari penginapan milik seller ini
+    const penginapanSeller = await Penginapan.find({ penyedia: req.user.id }).select('_id');
+    const penginapanIds = penginapanSeller.map(p => p._id);
+
+    // cari semua booking untuk penginapan tersebut
+    const bookings = await Booking.find({ penginapan: { $in: penginapanIds } })
+      .populate("user", "name email")
+      .populate("penginapan", "nama lokasi");
+
+    res.json(bookings);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

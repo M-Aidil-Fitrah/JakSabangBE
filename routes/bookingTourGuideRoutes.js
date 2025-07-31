@@ -4,7 +4,8 @@ const {
   getUserBookings,
   getAllBookings,
   updateBookingStatus,
-  handleMidtransCallback
+  handleMidtransCallback,
+  getBookingsForSeller,
 } = require("../controllers/bookingTourGuideController");
 const { verifyToken } = require("../middleware/auth");
 
@@ -170,5 +171,26 @@ router.patch("/:id/status", verifyToken, updateBookingStatus);
  *         description: Callback processed
  */
 router.post("/midtrans/callback", handleMidtransCallback);
+
+/**
+ * @swagger
+ * /api/booking/tour-guide/seller:
+ *   get:
+ *     summary: Ambil semua booking yang masuk untuk tour guide (sebagai seller)
+ *     tags: [BookingTourGuide]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Daftar booking untuk tour guide ini
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/BookingTourGuide'
+ */
+router.get("/seller", verifyToken, getBookingsForSeller);
+
 
 module.exports = router;

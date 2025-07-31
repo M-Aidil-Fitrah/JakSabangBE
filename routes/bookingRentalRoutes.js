@@ -5,6 +5,7 @@ const {
   getAllBookings,
   updateBookingStatus,
   handleMidtransCallback,
+  getBookingsForSeller,
 } = require("../controllers/bookingRentalController");
 const { verifyToken } = require("../middleware/auth");
 
@@ -73,6 +74,8 @@ router.post("/", verifyToken, createBooking);
  *                 $ref: '#/components/schemas/BookingRental'
  */
 router.get("/me", verifyToken, getUserBookings);
+router.get("/seller", verifyToken, getBookingsForSeller);
+
 
 /**
  * @swagger

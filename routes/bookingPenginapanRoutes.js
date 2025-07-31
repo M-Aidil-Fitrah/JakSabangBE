@@ -6,6 +6,7 @@ const {
   updatePaymentStatus,
   handleMidtransCallback,
   deleteBooking,
+  getBookingsForSeller,
 } = require("../controllers/bookingPenginapanController");
 
 const { verifyToken } = require("../middleware/auth");
@@ -201,5 +202,8 @@ router.post("/midtrans/callback", handleMidtransCallback);
  *         description: Booking tidak ditemukan
  */
 router.delete("/:id", verifyToken, deleteBooking);
+
+router.get("/seller", verifyToken, getBookingsForSeller);
+
 
 module.exports = router;
