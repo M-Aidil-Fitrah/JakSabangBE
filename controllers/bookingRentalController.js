@@ -1,4 +1,5 @@
 const BookingRental = require("../models/BookingRental");
+const Rental = require('../models/Rental');
 const midtransClient = require("midtrans-client");
 
 // Inisialisasi Midtrans Snap

@@ -1,5 +1,6 @@
 const Booking = require("../models/Booking");
 const Penginapan = require("../models/Penginapan");
+
 const midtransClient = require("midtrans-client");
 exports.createBooking = async (req, res) => {
   try {

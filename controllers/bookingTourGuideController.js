@@ -100,6 +100,7 @@ exports.updateBookingStatus = async (req, res) => {
 // Callback Midtrans
 exports.handleMidtransCallback = async (req, res) => {
   try {
+    
     const { order_id, transaction_status } = req.body;
     const booking = await Booking.findOne({ payment_id: order_id });
     if (!booking) return res.status(404).json({ error: "Booking tidak ditemukan" });
@@ -120,7 +121,7 @@ exports.handleMidtransCallback = async (req, res) => {
 exports.getBookingsForSeller = async (req, res) => {
   try {
     // Cari semua booking di mana tourGuide adalah user seller ini
-    const bookings = await BookingTourGuide.find({ tourGuide: req.user.id })
+    const bookings = await Booking.find({ tourGuide: req.user.id })
       .populate("user", "name email")
       .populate("tourGuide", "nama wilayah");  // opsional
 
