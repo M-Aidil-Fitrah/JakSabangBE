@@ -86,11 +86,11 @@ exports.getAllBookings = async (req, res) => {
 exports.getBookingsForSeller = async (req, res) => {
   try {
     // Cari semua rental milik seller ini
-    const rentals = await Rental.find({ penyedia: req.user.id }).select('_id');
-    const rentalIds = rentals.map(r => r._id);
+    // const rentals = await Rental.find({ penyedia: req.user.id }).select('_id');
+    // const rentalIds = rentals.map(r => r._id);
 
     // Cari booking untuk rental tersebut
-    const bookings = await BookingRental.find({ rental: { $in: rentalIds } })
+    const bookings = await BookingRental.find({ rental: req.user.id })
       .populate("user", "name email")
       .populate("rental", "nama");
 

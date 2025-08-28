@@ -206,11 +206,11 @@ exports.deleteBooking = async (req, res) => {
 exports.getBookingsForSeller = async (req, res) => {
   try {
     // Cari semua penginapan milik seller ini
-    const penginapanSeller = await Penginapan.find({ penyedia: req.user.id }).select('_id');
-    const penginapanIds = penginapanSeller.map(p => p._id);
+    // const penginapanSeller = await Penginapan.find({ penyedia: req.user.id }).select('_id');
+    // const penginapanIds = penginapanSeller.map(p => p._id);
 
     // Cari booking untuk penginapan tersebut
-    const bookings = await Booking.find({ penginapan: { $in: penginapanIds } })
+    const bookings = await Booking.find({ penginapan: req.user.id })
       .populate("user", "name email")
       .populate("penginapan", "nama lokasi");
 

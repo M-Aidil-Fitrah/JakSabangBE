@@ -203,6 +203,24 @@ router.post("/midtrans/callback", handleMidtransCallback);
  */
 router.delete("/:id", verifyToken, deleteBooking);
 
+/**
+ * @swagger
+ * /api/booking/penginapan/seller:
+ *   get:
+ *     summary: Ambil semua booking yang masuk untuk penginapan (sebagai seller)
+ *     tags: [BookingPenginapan]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Daftar booking untuk penginapan ini
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/BookingPenginapan'
+ */
 router.get("/seller", verifyToken, getBookingsForSeller);
 
 

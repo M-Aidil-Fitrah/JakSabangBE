@@ -74,6 +74,25 @@ router.post("/", verifyToken, createBooking);
  *                 $ref: '#/components/schemas/BookingRental'
  */
 router.get("/me", verifyToken, getUserBookings);
+
+/**
+ * @swagger
+ * /api/booking/rental/seller:
+ *   get:
+ *     summary: Ambil semua booking yang masuk untuk rental (sebagai seller)
+ *     tags: [BookingRental]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Daftar booking untuk rental ini
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/BookingRental'
+ */
 router.get("/seller", verifyToken, getBookingsForSeller);
 
 
