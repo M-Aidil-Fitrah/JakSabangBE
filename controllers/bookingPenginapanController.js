@@ -205,25 +205,25 @@ exports.deleteBooking = async (req, res) => {
 
 exports.getBookingsForSeller = async (req, res) => {
   try {
-    // Cari semua penginapan milik seller ini
-    // const penginapanSeller = await Penginapan.find({ penyedia: req.user.id }).select('_id');
-    // const penginapanIds = penginapanSeller.map(p => p._id);
+      // Cari semua penginapan milik seller ini
+      const penginapanSeller = await Penginapan.find({ penyedia: req.user.id }).select('_id');
+      const penginapanIds = penginapanSeller.map(p => p._id);
 
-    // Cari booking untuk penginapan tersebut
-    const bookings = await Booking.find({ penginapan: req.user.id })
-      .populate("user", "name email")
-      .populate("penginapan", "nama lokasi");
-
-    res.status(200).json({
-      success: true,
-      count: bookings.length,
-      data: bookings
-    });
-  } catch (err) {
-    console.error("[getBookingsForSeller - Penginapan]", err.message);
-    res.status(500).json({
-      success: false,
-      error: "Terjadi kesalahan pada server"
-    });
-  }
+      // Cari booking untuk penginapan tersebut
+      const bookings = await Booking.find({ penginapan: { $in: penginapanIds } })
+        .populate("user")
+        .populate("penginapan");
+  
+      res.status(200).json({
+        success: true,
+        count: bookings.length,
+        data: bookings
+      });
+    } catch (err) {
+      console.error("[getBookingsForSeller - Penginapan]", err.message);
+      res.status(500).json({
+        success: false,
+        error: "Terjadi kesalahan pada server"
+      });
+    }
 };

@@ -93,6 +93,49 @@ router.get("/", verifyToken, getMyBookings);
 
 /**
  * @swagger
+ * /api/booking/penginapan/seller:
+ *   get:
+ *     summary: Ambil semua booking yang masuk untuk penginapan (sebagai seller)
+ *     tags: [BookingPenginapan]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Daftar booking untuk penginapan ini
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/BookingPenginapan'
+ */
+router.get("/seller", verifyToken, getBookingsForSeller);
+
+/**
+ * @swagger
+ * /api/booking/penginapan/midtrans/callback:
+ *   post:
+ *     summary: Endpoint callback Midtrans (tidak perlu token)
+ *     tags: [BookingPenginapan]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               order_id:
+ *                 type: string
+ *               transaction_status:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Callback processed
+ */
+router.post("/midtrans/callback", handleMidtransCallback);
+
+/**
+ * @swagger
  * /api/booking/penginapan/{id}:
  *   get:
  *     summary: Ambil detail booking penginapan berdasarkan ID
@@ -117,6 +160,29 @@ router.get("/", verifyToken, getMyBookings);
  *         description: Booking tidak ditemukan
  */
 router.get("/:id", verifyToken, getBookingById);
+
+/**
+ * @swagger
+ * /api/booking/penginapan/{id}:
+ *   delete:
+ *     summary: Hapus booking penginapan
+ *     tags: [BookingPenginapan]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID booking
+ *     responses:
+ *       200:
+ *         description: Booking dihapus
+ *       404:
+ *         description: Booking tidak ditemukan
+ */
+router.delete("/:id", verifyToken, deleteBooking);
 
 /**
  * @swagger
@@ -156,72 +222,6 @@ router.get("/:id", verifyToken, getBookingById);
  *         description: Error
  */
 router.put("/:id/payment-status", verifyToken, updatePaymentStatus);
-
-/**
- * @swagger
- * /api/booking/penginapan/midtrans/callback:
- *   post:
- *     summary: Endpoint callback Midtrans (tidak perlu token)
- *     tags: [BookingPenginapan]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               order_id:
- *                 type: string
- *               transaction_status:
- *                 type: string
- *     responses:
- *       200:
- *         description: Callback processed
- */
-router.post("/midtrans/callback", handleMidtransCallback);
-
-/**
- * @swagger
- * /api/booking/penginapan/{id}:
- *   delete:
- *     summary: Hapus booking penginapan
- *     tags: [BookingPenginapan]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: ID booking
- *     responses:
- *       200:
- *         description: Booking dihapus
- *       404:
- *         description: Booking tidak ditemukan
- */
-router.delete("/:id", verifyToken, deleteBooking);
-
-/**
- * @swagger
- * /api/booking/penginapan/seller:
- *   get:
- *     summary: Ambil semua booking yang masuk untuk penginapan (sebagai seller)
- *     tags: [BookingPenginapan]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Daftar booking untuk penginapan ini
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/BookingPenginapan'
- */
-router.get("/seller", verifyToken, getBookingsForSeller);
 
 
 module.exports = router;

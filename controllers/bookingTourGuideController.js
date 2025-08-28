@@ -1,4 +1,5 @@
 const Booking = require("../models/BookingTourGuide");
+const TourGuide = require("../models/TourGuide");
 const midtransClient = require("midtrans-client");
 
 // init Midtrans Snap
@@ -120,10 +121,14 @@ exports.handleMidtransCallback = async (req, res) => {
 
 exports.getBookingsForSeller = async (req, res) => {
   try {
+    // Cari semua rental milik seller ini
+    const tourguideSeller = await TourGuide.find({ penyedia: req.user.id }).select('_id');
+    const tourguideIds = tourguideSeller.map(p => p._id);
+
     // Cari semua booking di mana tourGuide adalah user seller ini
-    const bookings = await Booking.find({ tourGuide: req.user.id })
-      .populate("user", "name email")
-      .populate("tourGuide", "nama wilayah");  // opsional
+    const bookings = await Booking.find({ tourGuide: { $in: tourguideIds } })
+      .populate("user")
+      .populate("tourGuide");  // opsional
 
     res.status(200).json({
       success: true,
