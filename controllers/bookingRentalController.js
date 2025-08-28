@@ -4,7 +4,7 @@ const midtransClient = require("midtrans-client");
 
 // Inisialisasi Midtrans Snap
 const snap = new midtransClient.Snap({
-  isProduction: true,
+  isProduction: false,
   serverKey: process.env.MIDTRANS_SERVER_KEY,
 });
 exports.createBooking = async (req, res) => {
