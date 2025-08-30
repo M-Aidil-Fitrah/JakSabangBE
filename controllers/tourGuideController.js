@@ -35,3 +35,36 @@ exports.getTourGuideById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+//  Update rental (hanya jika pemilik)
+exports.updateTourGuide = async (req, res) => {
+  try {
+    const tourGuide = await TourGuide.findById(req.params.id);
+    if (!tourGuide) return res.status(404).json({ error: "Tour Guide tidak ditemukan" });
+    if (tourGuide.penyedia.toString() !== req.user.id && req.user.role !== "admin")
+      return res.status(403).json({ error: "Akses ditolak" });
+
+    Object.assign(tourGuide, req.body);
+    if (req.file) tourGuide.gambar = req.file.path;
+
+    await tourGuide.save();
+    res.json(tourGuide);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+//  Hapus rental
+exports.deleteTourGuide = async (req, res) => {
+  try {
+    const tourGuide = await TourGuide.findById(req.params.id);
+    if (!tourGuide) return res.status(404).json({ error: "Tour Guide tidak ditemukan" });
+    if (tourGuide.penyedia.toString() !== req.user.id && req.user.role !== "admin")
+      return res.status(403).json({ error: "Akses ditolak" });
+
+    await tourGuide.deleteOne();
+    res.json({ message: "Tour Guide dihapus" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

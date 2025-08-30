@@ -16,6 +16,7 @@ const bookingTourGuideRoutes = require("./routes/bookingTourGuideRoutes");
 const bookingPaketRoutes = require("./routes/bookingPaketRoutes");
 const paketRoutes = require("./routes/paketRoutes");
 const verifikasiSellerRoutes = require("./routes/verifikasiSellerRoutes");
+const tokenRoutes = require("./routes/tokenRoutes");
 const app = express();
 const passport = require("passport");
 require("./config/passport"); 
@@ -40,6 +41,7 @@ app.use("/api/booking/paket", bookingPaketRoutes);
 app.use("/api/paket", paketRoutes);
 app.use("/api/verifikasi", verifikasiSellerRoutes); 
 app.use('/api', utilsRoutes);
+app.use("/api/token", tokenRoutes);
 app.use('/api/admin', adminUserRoutes);
 
 
