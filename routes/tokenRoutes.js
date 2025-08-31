@@ -25,21 +25,6 @@ const router = express.Router();
  *                 token:
  *                   type: string
  *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI..."
- *                 data:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                       example: "62834e83253eb4b8a4c2fc05"
- *                     role:
- *                       type: string
- *                       example: "buyer"
- *                     iat:
- *                       type: number
- *                       example: 1755545789
- *                     exp:
- *                       type: number
- *                       example: 1765632389
  */
 router.get("/", checkToken);
 

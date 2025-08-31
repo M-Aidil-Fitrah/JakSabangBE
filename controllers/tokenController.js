@@ -14,20 +14,17 @@ exports.checkToken = async (req, res) => {
             return res.status(200).json({
                 active: true,
                 token,
-                data: decoded
             });
         }
 
         return res.status(200).json({
             active: false,
             token,
-            data: decoded
         })
     } catch (error) {
         return res.status(200).json({
             active: false,
             token,
-            data: decoded
         });
     }
 }
